@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+
+html{
+    font-size: 100%;
+}
+
+body{
+    margin: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+    background-color: #eeffff;
+}
+
+.form-title{
+    font-size: 24px;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: 40px;
+}
+
+.format{
+    border: 1px solid skyblue;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+    width: 400px;
+    padding: 5%;
+}
+.ul-content{
+    
+    margin-left: -30px;
+}
+.ul-content ol{
+    font-size: 100%;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.info_format{
+    margin-left: 10px;
+}
+
+.small_format{
+    margin-left: 130px;
+}
+
+.submit_form{
+    margin-top: 10px;
+    width: 100px;
+    height: 50px;
+    margin-left: 200px;
+
+    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0px 1px 2px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0px 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0px 1px 2px rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    text-shadow: 0px -1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.register_form{
+    text-align: center;
+
+}
