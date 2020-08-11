@@ -5,17 +5,20 @@
 <?php
     session_start();
 
-    $dsn="mysql:dbname=xxx;host=localhost";
-    $user="xxx";
-    $password="xxx";
-    $pdo=new PDO($dsn,$user,$password,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING));
+
+    require_once("access.php");
+
+
     // login.htmlからPORT
     if (isset($_POST["login_submit"])){
         $login_user=$_POST["login_user"];
         $login_password=$_POST["login_password"];
         if ($login_user=="" || $login_password==""){
-            echo "未入力項目があります。";
-            exit;
+            $alert="<script type='text/javascript'>
+                alert('未入力項目があります。');
+                location.href='login.html';
+            </script>";
+            echo $alert;
         }
         // ユーザー名とパスワードが一致するもの
         $stmt=$pdo->prepare("SELECT user_name,table_name FROM tb_manage WHERE user_name=:login_user AND login_password=:login_password");
@@ -26,8 +29,11 @@
         $user=$results[0];
         $table=$results[1];
         if ($table==""){
-            echo "ユーザー名またはパスワードが違います。";
-            exit;
+            $alert="<script type='text/javascript'>
+                alert('ユーザー名またはパスワードが違います。');
+                location.href='login.html';
+            </script>";
+            echo $alert;
         }else{
             // 他ファイルに渡すため
             $_SESSION["user_name"]=$user;

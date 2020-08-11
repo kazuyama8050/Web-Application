@@ -30,10 +30,7 @@
     </div>
         
 <?php
-    $dsn="mysql:dbname=xxx;host=localhost";
-    $user="xxx";
-    $password="xxx";
-    $pdo=new PDO($dsn,$user,$password,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING));
+        require_once("access.php");
     
     // 上からID、ユーザー名、メールアドレス、パスワード、Form.phpで使用するテーブル名
     $sql="CREATE TABLE IF NOT EXISTS tb_manage"
@@ -51,11 +48,15 @@
         $address=$_POST["address"];
         $register_password=$_POST["register_password"];
         if ($user_name=="" || $address=="" || $register_password==""){
-            echo "未入力項目があります。";
+            $alert="<script type='text/javascript'>
+            alert('未入力項目があります');</script>";
+            echo $alert;
             exit;
         }
         if ($user_name==$register_password){
-            echo "ユーザー名とパスワードが一致しています。";
+            $alert="<script type='text/javascript'>
+            alert('ユーザー名とパスワードは違うものを登録してください');</script>";
+            echo $alert;
             exit;
         }
         // ユーザー名が既に存在する場合
@@ -65,7 +66,9 @@
         $results=$stmt->fetch();
         $result=$results[0];
         if ($result!=""){
-            echo "登録済みのユーザー名です。";
+            $alert="<script type='text/javascript'>
+            alert('登録済みのユーザー名です。');</script>";
+            echo $alert;
             exit;
         }
         // データベースにユーザー情報を登録
@@ -77,8 +80,13 @@
         $sql->bindParam(":register_password", $register_password, PDO::PARAM_STR);
         $sql->bindParam(":table_name", $table_name, PDO::PARAM_STR);
         $sql->execute();
-        echo "登録完了しました。";
+        $alert="<script type='text/javascript'>
+                alert('登録しました。');
+                location.href='login.html';
+            </script>";
+            echo $alert;
     }
+    
 ?>
 </body>
 </html>

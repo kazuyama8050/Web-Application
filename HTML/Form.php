@@ -5,20 +5,19 @@
 <?php
     session_start();
 
-    $dsn="mysql:dbname=xxx;host=localhost";
-    $user="xxx";
-    $password="xxx";
-    $pdo=new PDO($dsn,$user,$password,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING));
-
+    require_once("access.php");
+    
     ##ログイン時の情報からテーブル名を取り出す。
     if (isset($_SESSION["table_name"])){
         $table=$_SESSION["table_name"];
     }else{
         $alert="<script type='text/javascript'>
-            alert('不正な画面遷移です。');</script>";
-            echo $alert;
-        header("location: login.php");
+            alert('不正な画面遷移です。');
+            location.href='login.html';
+        </script>";
+        echo $alert;
     }
+
    
 // 上からID、カテゴリー、題名、メモ欄、記録した日付、締切日、重要な印
     $sql="CREATE TABLE IF NOT EXISTS $table"
@@ -44,14 +43,14 @@
         <meta charset="utf-8">
         <title>ホーム画面</title>
         <meta name="description" content="ホーム画面">
-        <meta name=”viewport” content=”width=device-width”, initial-scale=1”>
-        <link rel="stylesheet" href="style.css">
+        <meta name=”viewport” content=”width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes”>
+        <link rel="stylesheet" href="style_2.css">
     </head>
     
     <body>
 
     <header class="page-header wrapper">
-      <h1><a href="">メ  モ  帳</a></h1>
+      <h1><a href=""><img class="logo" src="images/memo1.png"></a></h1>
       <nav>
         <ul class="main-nav">
             <li><a href="logout.php">ログアウト</a></li>
@@ -62,50 +61,65 @@
 
     <div class="all_pages">
     <main>
-    <div class="container">
-        <div class="form_format">
+        <ul id="selection">
+            <ol><a href="#" class="active" data-id="form1">記録</a></ol>
+            <ol><a href="#" data-id="form2">閲覧</a></ol>
+        </ul>
+
+        <div class="form_format active" id="form1">
         
-        <form method="POST" action="Write.php">
-            <p style="margin-tpo: 20px">カテゴリー</p>
-            <input class="text_form" type="text" name="category">
-            <p>題名</p>
-            <input class="text_form" type="text" name="capital">
-            <p>締切日</p><input class="text_form" type="date" name="last_date" placeholder="締切日">
-            <div class="text_submit">
+            <form method="POST" action="Write.php">
+
+            <ul class="text_submit">
                 <ol>
-                    <textarea name="memo" placeholder="TEXT" rows="8" cols="40"></textarea>
+                    <p>カテゴリー</p>
+                    <input class="text_form" type="text" name="category">
+                    <p>題名</p>
+                    <input class="text_form" type="text" name="capital">
+                    <p>締切日</p><input class="text_form" type="date" name="last_date" placeholder="締切日">
+                    
                 </ol>
-                <ol><input type="hidden" name="important" value="0"></ol>
-                <ol><input class="user_button" type="submit" name="submit" value="記録"></ol>
-            </div>        
-            <ol><input class="check_box" type="checkbox" name="important" value="1">重要</ol>
-        </form>
+                <ol class="left_write">
+                    <ol><textarea name="memo" placeholder="TEXT" rows="10" cols="40"></textarea></ol>
+                    <ol><input type="hidden" name="important" value="0"></ol>
+                    <div class="sub_left_write">       
+                        <ol><input class="check_box" type="checkbox" name="important" value="1">✿</ol>
+                        <ol><input class="user_button" type="submit" name="submit" value="記録"></ol>
+                    </div>
+                </ol>
+            </ul>
+
+            </form>
+
         </div>
 
-        <div class="form_format3">
-        <form method="POST" action="">
-        <p style="margin-top: 20px">カテゴリー検索</p>
-        <!-- データベースからカテゴリーの選択肢を抽出 -->
-            <select name="search_category">
-                <?php $sql="SELECT DISTINCT category FROM $table"; ?>
-                <?php $stmt=$pdo->query($sql); ?>
-                <?php $results=$stmt->fetchAll(); ?>
-                
-                <?php foreach ($results as $row): ?>
-                    <?php $overlap=$row["category"]; ?>
-                    <option value="<?php echo $overlap; ?>"><?php echo $overlap; ?></option>
-                <?php endforeach; ?>  
-            </select>
-            <input class="user_button" style="margin-bottom: 20px" type="submit" name="search_category_s" value="カテゴリー検索">
-        </form>
-            
-        <form method="POST" action="">
-            <p>題名検索</p>
-            <input class="text_form" style="margin-bottom: 5px" type="text" name="search_capital" placeholder="題名">
-            <input class="user_button" type="submit" name="search_capital_s" value="題名検索">
-        </form>
+        <div class="form_format form_sub" id="form2">
+            <ul class="form_sub_ul">
+                <ol>
+                    <form method="POST" action="">
+                        <p>カテゴリー検索</p>
+                        <!-- データベースからカテゴリーの選択肢を抽出 -->
+                        <select name="search_category">
+                            <?php $sql="SELECT DISTINCT category FROM $table"; ?>
+                            <?php $stmt=$pdo->query($sql); ?>
+                            <?php $results=$stmt->fetchAll(); ?>
+                                
+                            <?php foreach ($results as $row): ?>
+                                <?php $overlap=$row["category"]; ?>
+                                <option value="<?php echo $overlap; ?>"><?php echo $overlap; ?></option>
+                            <?php endforeach; ?>  
+                        </select>
+                        <input class="user_button" type="submit" name="search_category_s" value="カテゴリー検索">
+                    </form>
+                </ol>
+                <ol>
+                <form method="POST" action="">
+                    <p>題名検索</p>
+                    <input class="text_form" type="text" name="search_capital" placeholder="題名">
+                    <input class="user_button" type="submit" name="search_capital_s" value="題名検索">
+                </form>
+                </ol>
         </div>
-    </div>
 
         
         
@@ -147,38 +161,36 @@
             <?php foreach ($results as $key): ?>
                 <?php $key["dates"]=date("Y/m/d",strtotime($key["dates"]))?>
                 <?php $key["last_date"]=date("Y/m/d",strtotime($key["last_date"]))?>
-                <div class="box">
-                    <small><span style='color:#666666 text-align: center;'> <?php echo $key["date"] ;?></span></small><br>
-                    <details  style=" width:auto; padding: 2px; margin-bottom: 5px; margin-left: 10 border: 1px solid #cccccc;" 
-                    open="close"><summary style="background-color:#EEEEEE width: auto; text-align: center;">
-                    <strong> <?php echo $key["capital"]; ?></strong></summary>
-                    <br>
-                    <div class="container">
-                        <div class="form_format2">
-                            <ul class="result_list">
-                            <ol style="color: #f37053;"><?php if ($key["important"]=="1") echo "重要!!"; ?></ol>
-                            <ol>番号： <?php echo $key["id"]; ?></ol>
-                            <ol>カテゴリー： <?php echo $key["category"]; ?></ol>
-                            <ol>期限： <?php if ($key["last_date"]=="1970/01/01") echo "期限なし"; else echo $key["last_date"];?></ol>
-                            <ol>メモ： <?php echo nl2br($key["memo"]); ?></ol>
+                <small>
+                    <span style='color:#666666 text-align: center;'> <?php echo $key["dates"] ;?></span>
+                </small><br>
+                <details open="close">
+                    <summary>
+                        <strong> <?php echo $key["capital"]; ?></strong>
+                    </summary><br>
+                    <ul class="result_list">
+                        <ol>
+                            <ul class="first_list">
+                                <ol style="color: #f37053;"><?php if ($key["important"]=="1") echo "重要!!"; ?></ol>
+                                <ol>カテゴリー： <?php echo $key["category"]; ?></ol>
+                                <ol>期限： <?php if ($key["last_date"]=="1970/01/01") echo "期限なし"; else echo $key["last_date"];?></ol>
+                                <ol>メモ： <?php echo nl2br($key["memo"]); ?></ol>
                             </ul>
-                        </div>
-
-                        <!-- 削除と編集 -->
-                        <div class="form_format2">
+                        </ol>
+                        
+                        <ol><!-- 削除と編集 -->
                             <form method="POST" action="Form2.php">
-                            <ul style="display: flex; margin-right: 80px; margin-bottom: 10px;">
-                            <ol><input type="hidden" name="id" value="<?php echo $key["id"]?>"></ol>
-                            <ol><input class="user_button" type="submit" name="delete" value="削除"></ol>
-                            <ol><input class="user_button" type="submit" name="edit" value="編集"></ol>
+                            <ul class="second_list">
+                                <ol><input type="hidden" name="id" value="<?php echo $key["id"]?>"></ol>
+                                <ol><input class="user_button" type="submit" name="delete" value="削除"></ol>
+                                <ol><input class="user_button" type="submit" name="edit" value="編集"></ol>
                             </ul>
-                            <textarea style="margin-right: 30px;" name="edit_text" placeholder="編集フォーム" rows="7" cols="50"></textarea>
+                            <textarea name="edit_text" placeholder="編集フォーム" rows="7" cols="30"></textarea>
 
                             </form>
-                        </div>
-                    </div>
-                    </details>
-                </div>
+                        </ol>
+                    </ul>
+                </details>
             <?php endforeach; ?>   
             <?php else: ?>
         <?php endif; ?>
@@ -191,98 +203,139 @@
                 このサイトは様々なフィルターを掛けることができるメモ帳です。
             </p>
             <p>
-                締切日をい指定することで、直近の予定を簡単に把握することができます。
+                締切日を指定することで、直近の予定を簡単に把握することができます。<br>                
+            </p>
+            <p>
+                また、✿マークにチェックすることで後で簡単にチェックできます。
             </p>
             <p>
                 改善点がある場合は、お問い合わせへどうぞ
             </p>
         </div>
             
-        <div class="aside_submit">
-            <form class="form_format" method="POST" action="">
-                <input class="user_button" type="submit" name="order_search" value="期限順">
-            </form>
-
-            <form class="form_format" method="POST" action="">
-                <input class="user_button" type="submit" name="important_search" value="重要">
-        </div>
+        <ul id="selection_sub">
+            <ol><a href="#" class="active" data-id="form3">期限順</a></ol>
+            <ol><a href="#" data-id="form4">重要</a></ol>
+        </ul>
 
         <?php
         // 締切日順
-            if (isset($_POST["order_search"])){
-                $stmt=$pdo->prepare("SELECT * FROM $table WHERE last_date!='' ORDER BY last_date");
-                $stmt->execute();
-                $results=$stmt->fetchAll();
+            $stmt=$pdo->prepare("SELECT * FROM $table WHERE last_date!='' ORDER BY last_date");
+            $stmt->execute();
+            $results_dates=$stmt->fetchAll();
         // 重要マーク
-            }else{
-                $stmt=$pdo->prepare("SELECT * FROM $table WHERE important='1'");
-                $stmt->execute();
-                $results=$stmt->fetchAll();
-            }
+            $stmt=$pdo->prepare("SELECT * FROM $table WHERE important='1'");
+            $stmt->execute();
+            $results_imp=$stmt->fetchAll();
+            
 
             
         ?>
             <!-- 出力結果　最大10個 -->
+        <div class="form_format_sub active box_color" id="form3">
             <?php $i=0; ?>
-            <?php foreach ($results as $key): ?>
+            <?php foreach ($results_dates as $key): ?>
                 <?php $key["dates"]=date("Y/m/d",strtotime($key["dates"]))?>
                 <?php $key["last_date"]=date("Y/m/d",strtotime($key["last_date"]))?>
-                <div class="box">
-                    <small><span style='color:#666666 text-align: center;'> <?php echo $key["date"] ;?></span></small><br>
-                    <details  style=" width:auto; padding: 2px; margin-bottom: 5px; margin-left: 10 border: 1px solid #cccccc;" 
-                    open="close"><summary style="background-color:#EEEEEE width: auto; text-align: center;">
-                    <strong> <?php echo $key["capital"]; ?></strong></summary>
-                    <br>
-                    <div class="container">
-                        <div class="form_format2">
-                            <ul class="result_list">
-                            <ol style="color: #f37053;"><?php if ($key["important"]=="1") echo "重要!!"; ?></ol>
-                            <ol>番号： <?php echo $key["id"]; ?></ol>
-                            <ol>カテゴリー： <?php echo $key["category"]; ?></ol>
-                            <ol>期限： <?php if ($key["last_date"]=="1970/01/01") echo "期限なし"; else echo $key["last_date"];?></ol>
-                            <ol>メモ： <?php echo nl2br($key["memo"]); ?></ol>
+                <small>
+                    <span style='color:#666666 text-align: center;'> <?php echo $key["dates"] ;?></span>
+                </small><br>
+                <details open="close">
+                    <summary>
+                        <strong> <?php echo $key["capital"]; ?></strong>
+                    </summary><br>
+                    <ul class="result_list">
+                        <ol>
+                            <ul class="first_list">
+                                <ol style="color: #f37053;"><?php if ($key["important"]=="1") echo "重要!!"; ?></ol>
+                                <ol>カテゴリー： <?php echo $key["category"]; ?></ol>
+                                <ol>期限： <?php if ($key["last_date"]=="1970/01/01") echo "期限なし"; else echo $key["last_date"];?></ol>
+                                <ol>メモ： <?php echo nl2br($key["memo"]); ?></ol>
                             </ul>
-                        </div>
-
-                        <div class="form_format2">
+                        </ol>
+                        
+                        <ol><!-- 削除と編集 -->
                             <form method="POST" action="Form2.php">
-                            <ul style="display: flex; margin-right: 80px; margin-bottom: 10px;">
-                            <ol><input type="hidden" name="id" value="<?php echo $key["id"]?>"></ol>
-                            <ol><input class="user_button" type="submit" name="delete" value="削除"></ol>
-                            <ol><input class="user_button" type="submit" name="edit" value="編集"></ol>
+                            <ul class="second_list">
+                                <ol><input type="hidden" name="id" value="<?php echo $key["id"]?>"></ol>
+                                <ol><input class="user_button" type="submit" name="delete" value="削除"></ol>
+                                <ol><input class="user_button" type="submit" name="edit" value="編集"></ol>
                             </ul>
-                            <textarea style="margin-right: 30px;" name="edit_text" placeholder="編集フォーム" rows="7" cols="50"></textarea>
+                            <textarea name="edit_text" placeholder="編集フォーム" rows="7" cols="30"></textarea>
 
                             </form>
-                        </div>
-                    </div>
-                    </details>
-                </div>
+                        </ol>
+                        </ul>
+                </details>
             <?php $i++; ?>
             <?php if ($i>=10): break; ?>
             <?php endif; ?>
             <?php endforeach; ?>   
+        </div>
+
+        <!-- 出力結果　最大10個 -->
+        <div class="form_format_sub box_color" id="form4">
+            <?php $i=0; ?>
+            <?php foreach ($results_imp as $key): ?>
+                <?php $key["dates"]=date("Y/m/d",strtotime($key["dates"]))?>
+                <?php $key["last_date"]=date("Y/m/d",strtotime($key["last_date"]))?>
+                <small>
+                    <span style='color:#666666 text-align: center;'> <?php echo $key["dates"] ;?></span>
+                </small><br>
+                <details open="close">
+                    <summary>
+                        <strong> <?php echo $key["capital"]; ?></strong>
+                    </summary><br>
+                    <ul class="result_list">
+                        <ol>
+                            <ul class="first_list">
+                                <ol style="color: #f37053;"><?php if ($key["important"]=="1") echo "重要!!"; ?></ol>
+                                <ol>カテゴリー： <?php echo $key["category"]; ?></ol>
+                                <ol>期限： <?php if ($key["last_date"]=="1970/01/01") echo "期限なし"; else echo $key["last_date"];?></ol>
+                                <ol>メモ： <?php echo nl2br($key["memo"]); ?></ol>
+                            </ul>
+                        </ol>
+                        
+                        <ol><!-- 削除と編集 -->
+                            <form method="POST" action="Form2.php">
+                            <ul class="second_list">
+                                <ol><input type="hidden" name="id" value="<?php echo $key["id"]?>"></ol>
+                                <ol><input class="user_button" type="submit" name="delete" value="削除"></ol>
+                                <ol><input class="user_button" type="submit" name="edit" value="編集"></ol>
+                            </ul>
+                            <textarea name="edit_text" placeholder="編集フォーム" rows="7" cols="30"></textarea>
+
+                            </form>
+                        </ol>
+                        </ul>
+                </details>
+            <?php $i++; ?>
+            <?php if ($i>=10): break; ?>
+            <?php endif; ?>
+            <?php endforeach; ?>   
+        </div>
             
 
 
 
         </aside>
+        <script src="main.js"></script>
         </div>
         
     
     
     <footer>
     <div class="whole-footer">
-        <h4 id="scroll-top"><a href="">トップへ戻る</a></h4>
-      <div>
+        <h4><a href="">トップへ戻る</a></h4>
+      
       <nav>
         <ul class="footer-nav">
-        <li><a href="logout.php"class="arrow sample1">ログアウト</a></li>
-        <li><a href=""class="arrow sample1">お問い合わせ</a></li>
+            <li><a href="logout.php"class="arrow sample1">ログアウト</a></li>
+            <li><a href=""class="arrow sample1">お問い合わせ</a></li>
         </ul>    
       </nav>
-      </div>
-        <p><small><a>&copy; 2020 KAZUROG<a></small></p> 
+      
+        <p><small>&copy; 2020 KAZUROG</small></p> 
     </div><!--whole-footer終了!-->
     </footer>
     </body>

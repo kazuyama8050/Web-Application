@@ -19,15 +19,14 @@
         $table=$_SESSION["table_name"];
     }else{
         $alert="<script type='text/javascript'>
-            alert('不正な画面遷移です。');</script>";
-            echo $alert;
-        header("location: login.html");
+            alert('不正な画面遷移です。');
+            location.href='login.html';
+        </script>";
+        echo $alert;
     }
 
-    $dsn="mysql:dbname=xxx;host=localhost";
-    $user="xxx";
-    $password="xxx";
-    $pdo=new PDO($dsn,$user,$password,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING));
+    
+    require_once("access.php");
 
     // Form.phpで記録ボタンが押されたとき
     if (isset($_POST["submit"])){

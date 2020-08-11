@@ -6,10 +6,7 @@
 // ログアウトボタンが押された時
     session_start();
 
-    $dsn="mysql:dbname=xxx;host=localhost";
-    $user="xxx";
-    $password="xxx";
-    $pdo=new PDO($dsn,$user,$password,array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_WARNING));
+    require_once("access.php");
     
     // sessionを削除
     $_SESSION=array();
